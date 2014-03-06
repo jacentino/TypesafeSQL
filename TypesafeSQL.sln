@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Web
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypesafeSQL", "TypesafeSQL\TypesafeSQL.csproj", "{285930E9-7C8A-42C2-A326-62BFBA3F453C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypesafeSQL.Tests", "TypesafeSQL.Tests\TypesafeSQL.Tests.csproj", "{9890FE89-E4DD-46CA-BE2E-660CAE6038FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypesafeSQL.Dapper", "TypesafeSQL.Dapper\TypesafeSQL.Dapper.csproj", "{E1FD39FC-1242-4B38-84D7-F94F98A06600}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{285930E9-7C8A-42C2-A326-62BFBA3F453C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{285930E9-7C8A-42C2-A326-62BFBA3F453C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{285930E9-7C8A-42C2-A326-62BFBA3F453C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{285930E9-7C8A-42C2-A326-62BFBA3F453C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9890FE89-E4DD-46CA-BE2E-660CAE6038FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9890FE89-E4DD-46CA-BE2E-660CAE6038FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9890FE89-E4DD-46CA-BE2E-660CAE6038FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9890FE89-E4DD-46CA-BE2E-660CAE6038FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1FD39FC-1242-4B38-84D7-F94F98A06600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1FD39FC-1242-4B38-84D7-F94F98A06600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1FD39FC-1242-4B38-84D7-F94F98A06600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1FD39FC-1242-4B38-84D7-F94F98A06600}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

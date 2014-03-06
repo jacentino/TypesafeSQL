@@ -1,0 +1,8 @@
+*.suo
+*.user
+packages
+obj
+bin
+/TypesafeSQL.Tests/TestResult.xml
+/TypesafeSQL.Tests/TypesafeSQL.Tests.nunit
+/TypesafeSQL.Tests/TypesafeSQL.Tests.VisualState.xml

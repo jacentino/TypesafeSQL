@@ -832,7 +832,7 @@ namespace TypesafeSQL.Tests
         }
 
         [Test]
-        public void GetSqlCommandTranslatesMultipleWhereClausesWithConditionsInOneClause()
+        public void GetSqlCommandTranslatesMultipleWhereClausesToConditionsInOneClause()
         {
             var builder = new QueryBuilder();
             var command = builder.Table<User>()
@@ -844,7 +844,7 @@ namespace TypesafeSQL.Tests
         }
 
         [Test]
-        public void GetSqlCommandTrnslatesWhereClauseAfterSelectWithNestedSelect()
+        public void GetSqlCommandTranslatesWhereClauseAfterSelectToNestedSelect()
         {
             var builder = new QueryBuilder();
             var command = builder.Table<User>()
@@ -856,6 +856,56 @@ namespace TypesafeSQL.Tests
                 Is.EqualTo(
                     "SELECT * FROM (SELECT [sq0_u].[Login] AS [UserName], [sq0_u].[Email] AS [Email] FROM [User] [sq0_u]) [u] " + 
                     "WHERE ([u].[UserName]) = (@p0)"));
+        }
+
+        [Test]
+        public void GetSqlCommandTranslatesSelectClauseAfterSelectToNestedSelect()
+        {
+            var builder = new QueryBuilder();
+            var command = builder.Table<User>()
+                .Select(u => new { UserName = u.Login, Email = u.Email })
+                .Select(u => u.UserName)
+                .ToSql();
+            Assert.That(
+                command.Command,
+                Is.EqualTo(
+                    "SELECT [u].[UserName] FROM (SELECT [sq0_u].[Login] AS [UserName], [sq0_u].[Email] AS [Email] FROM [User] [sq0_u]) [u]"));
+        }
+
+        [Test]
+        public void GetSqlCommandTranslatesJoinClauseAfterSelectToNestedSelect()
+        {
+            var builder = new QueryBuilder();
+            var command = builder.Table<User>()
+                .Select(u => new { UserId = u.Id, UserName = u.Login })
+                .Join(builder.Table<UserRoleLink>(), u => u.UserId, l => l.UserId, (u, l) => new { u, l })
+                .Join(builder.Table<Role>(), ul => ul.l.RoleId, r => r.Id, (ul, r) => new { ul.u.UserName, RoleName = r.Name })
+                .ToSql();
+            Assert.That(
+                command.Command,
+                Is.EqualTo(
+                    "SELECT [u].[UserName] AS [UserName], [r].[Name] AS [RoleName] " + 
+                    "FROM (SELECT [sq0_u].[Id] AS [UserId], [sq0_u].[Login] AS [UserName] FROM [User] [sq0_u]) [u]  " +
+	                    "JOIN [UserRoleLink] [l] ON [u].[UserId] = [l].[UserId]  " +
+	                    "JOIN [Role] [r] ON [l].[RoleId] = [r].[Id]"));
+        }
+
+        [Test]
+        public void GetSqlCommandTranslatesLeftJoinClauseAfterSelectToNestedSelect()
+        {
+            var builder = new QueryBuilder();
+            var command = builder.Table<User>()
+                .Select(u => new { UserId = u.Id, UserName = u.Login })
+                .LeftJoin(builder.Table<UserRoleLink>(), u => u.UserId, l => l.UserId, (u, l) => new { u, l })
+                .LeftJoin(builder.Table<Role>(), ul => ul.l.RoleId, r => r.Id, (ul, r) => new { ul.u.UserName, RoleName = r.Name })
+                .ToSql();
+            Assert.That(
+                command.Command,
+                Is.EqualTo(
+                    "SELECT [u].[UserName] AS [UserName], [r].[Name] AS [RoleName] " +
+                    "FROM (SELECT [sq0_u].[Id] AS [UserId], [sq0_u].[Login] AS [UserName] FROM [User] [sq0_u]) [u] " +
+                        "LEFT JOIN [UserRoleLink] [l] ON [u].[UserId] = [l].[UserId] " +
+                        "LEFT JOIN [Role] [r] ON [l].[RoleId] = [r].[Id]"));
         }
 
         [Test]

@@ -11,9 +11,12 @@ namespace TypesafeSQL.Tests
         public static void Main(string[] args)
         {
             var tests1 = new SqlCommandBuilderTests();
+            tests1.GetSqlCommandTranslatesSelectClauseAfterSelectToNestedSelect();
+            tests1.GetSqlCommandTranslatesJoinClauseAfterSelectToNestedSelect();
+            tests1.GetSqlCommandTranslatesLeftJoinClauseAfterSelectToNestedSelect();
             //tests1.GetSqlCommandTranslatesMultipleWhereClausesWithConditionsInOneClause();
             //tests1.GetSqlCommandMultipleWhereClausesAfterGroupByIsTranslatedToHavingWithMultipleConditions();
-            tests1.GetSqlCommandTrnslatesWhereClauseAfterSelectWithNestedSelect();
+            //tests1.GetSqlCommandTranslatesWhereClauseAfterSelectToNestedSelect();
             //tests1.GetSqlCommandTranslatesWhereOnBoolPropertyToIntComparison();
             //tests1.GetSqlCommandTranslatesWhereOnNegatedBoolPropertyToIntComparison();
             //tests1.GetSqlCommandTranslatesBoolPropertyInSelectClauseAsItself();

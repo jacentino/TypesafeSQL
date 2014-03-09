@@ -33,7 +33,7 @@ namespace TypesafeSQL.Tests
             var data = CreateQueryData<User>();
             var query = CreateQuery<User>(data);
             query.Where(u => u.Login.StartsWith("jac"));
-            Assert.That(data.WhereClause, Is.Not.Null);
+            Assert.That(data.WhereClauses, Is.Not.Empty);
         }
 
         [Test]

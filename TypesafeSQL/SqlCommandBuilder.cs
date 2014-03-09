@@ -344,8 +344,9 @@ namespace TypesafeSQL
             }
             else
             {
-                var allParams = new[] { data.SelectClause, data.GroupByKey, data.GroupByElement, data.WhereClause }
+                var allParams = new[] { data.SelectClause, data.GroupByKey, data.GroupByElement }
                     .Where(c => c != null)
+                    .Union(data.WhereClauses)
                     .Union(data.OrderByProperties.Select(o => o.Item1))
                     .SelectMany(c => c.Parameters)
                     .GroupBy(p => p.Type)
@@ -374,16 +375,16 @@ namespace TypesafeSQL
 
         private object GetHavingClauseText(SelectQueryData data)
         {
-            return data.HavingClause != null
-                ? " HAVING " + ExpressionToSql(data.HavingClause.Body, true)
+            return data.HavingClauses.Count > 0
+                ? " HAVING " + string.Join(" AND ", data.HavingClauses.Select(c => ExpressionToSql(c.Body, true)))
                 : "";
         }
 
 
         protected virtual string GetWhereClauseText(SelectQueryData data)
         {
-            return data.WhereClause != null
-                ? " WHERE " + ExpressionToSql(data.WhereClause.Body, true)
+            return data.WhereClauses.Count > 0
+                ? " WHERE " + string.Join(" AND ", data.WhereClauses.Select(c => ExpressionToSql(c.Body, true)))
                 : "";
         }
 

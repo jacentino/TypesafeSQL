@@ -17,10 +17,13 @@ namespace TypesafeSQL
         /// <param name="fromData">
         /// The data passed to a from clause.
         /// </param>
+        /// <param name="modelType">
+        /// The type of a query model.
+        /// </param>
         /// <returns>
         /// The <see cref="c:SelectQueryData"/> instance.
         /// </returns>
-        SelectQueryData CreateSelectQueryData(IQuerySource fromData);
+        SelectQueryData CreateSelectQueryData(IQuerySource fromData, Type modelType = null);
 
         /// <summary>
         /// Creates the set operation (union/intersect/except) query specification data object.

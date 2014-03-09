@@ -27,12 +27,12 @@ namespace TypesafeSQL
         }
 
         public IQuerySource FromData { get; set; }
-        public Type ModelType { get { return FromData.ModelType; } }
+        public Type ModelType { get; private set; }
         public bool Distinct { get; set; }
         public int TakeRows { get; set; }
         public int SkipRows { get; set; }
-        public LambdaExpression WhereClause { get; set; }
-        public LambdaExpression HavingClause { get; set; }
+        public ICollection<LambdaExpression> WhereClauses { get; private set; }
+        public ICollection<LambdaExpression> HavingClauses { get; private set; }
         public ICollection<Tuple<LambdaExpression, bool>> OrderByProperties { get; private set; }
         public ICollection<JoinSpec> Joins { get; private set; }
         public LambdaExpression SelectClause { get; set; }
@@ -48,16 +48,19 @@ namespace TypesafeSQL
         /// <param name="fromData">
         /// The data passed to the from clause.
         /// </param>
-        public SelectQueryData(SqlCommandBuilder commandBuilder, IQuerySource fromData)
+        public SelectQueryData(SqlCommandBuilder commandBuilder, IQuerySource fromData, Type modelType = null)
         {
             Check.NotNull(commandBuilder, "commandBuilder");
             Check.NotNull(fromData, "fromData");
+            WhereClauses = new List<LambdaExpression>();
+            HavingClauses = new List<LambdaExpression>();
             Distinct = false;
             TakeRows = 0;
             SkipRows = 0;
             OrderByProperties = new List<Tuple<LambdaExpression, bool>>();
             Joins = new List<JoinSpec>();
             FromData = fromData;
+            ModelType = modelType ?? fromData.ModelType;
             this.commandBuilder = commandBuilder;
 
         }
@@ -87,7 +90,7 @@ namespace TypesafeSQL
         /// </returns>
         public ParameterizedSql GetSqlCommandOrTableName(string subQueryPrefix)
         {
-            if (WhereClause == null && WhereClause == null && HavingClause == null &&
+            if (SelectClause == null && WhereClauses.Count == 0 && HavingClauses.Count == 0 &&
                 Joins.Count == 0 && OrderByProperties.Count == 0 && GroupByKey == null)
                 return FromData.GetSqlCommandOrTableName(subQueryPrefix);
             else

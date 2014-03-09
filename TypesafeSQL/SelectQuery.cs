@@ -47,10 +47,13 @@ namespace TypesafeSQL
         public virtual IQuery<TModel> Where(Expression<Predicate<TModel>> predicate)
         {
             Check.NotNull(predicate, "predicate");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .Where(predicate);
             if (data.GroupByKey == null)
-                data.WhereClause = predicate;
+                data.WhereClauses.Add(predicate);
             else
-                data.HavingClause = predicate;
+                data.HavingClauses.Add(predicate);
             return this;
         }
 
@@ -69,6 +72,9 @@ namespace TypesafeSQL
         public virtual IQuery<TResultModel> Select<TResultModel>(Expression<Func<TModel, TResultModel>> projection)
         {
             Check.NotNull(projection, "projection");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .Select(projection);
             data.SelectClause = projection;
             return new SelectQuery<TResultModel>(data, dataFactory);
         }
@@ -85,6 +91,9 @@ namespace TypesafeSQL
         public IOrderedQuery<TModel> OrderBy(Expression<Func<TModel, object>> selector)
         {
             Check.NotNull(selector, "selector");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .OrderBy(selector);
             data.OrderByProperties.Add(Tuple.Create<LambdaExpression, bool>(selector, true));
             return this;
         }
@@ -101,6 +110,9 @@ namespace TypesafeSQL
         public virtual IOrderedQuery<TModel> OrderByDescending(Expression<Func<TModel, object>> selector)
         {
             Check.NotNull(selector, "selector");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .OrderByDescending(selector);
             data.OrderByProperties.Add(Tuple.Create<LambdaExpression, bool>(selector, false));
             return this;
         }
@@ -214,6 +226,9 @@ namespace TypesafeSQL
             Check.NotNull(outerKeySelector, "outerKeySelector");
             Check.NotNull(innerKeySelector, "innerKeySelector");
             Check.NotNull(resultSelector, "resultSelector");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .Join(inner, outerKeySelector, innerKeySelector, resultSelector);
             data.Joins.Add(new SelectQueryData.JoinSpec 
             { 
                 JoinType = "",
@@ -262,6 +277,9 @@ namespace TypesafeSQL
             Check.NotNull(outerKeySelector, "outerKeySelector");
             Check.NotNull(innerKeySelector, "innerKeySelector");
             Check.NotNull(resultSelector, "resultSelector");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .LeftJoin(inner, outerKeySelector, innerKeySelector, resultSelector);
             data.Joins.Add(new SelectQueryData.JoinSpec
             {
                 JoinType = "LEFT",
@@ -310,6 +328,9 @@ namespace TypesafeSQL
             Check.NotNull(outerKeySelector, "outerKeySelector");
             Check.NotNull(innerKeySelector, "innerKeySelector");
             Check.NotNull(resultSelector, "resultSelector");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .RightJoin(inner, outerKeySelector, innerKeySelector, resultSelector);
             data.Joins.Add(new SelectQueryData.JoinSpec
             {
                 JoinType = "RIGHT",
@@ -336,6 +357,9 @@ namespace TypesafeSQL
         public IQuery<IGroup<TKey, TModel>> GroupBy<TKey>(Expression<Func<TModel, TKey>> keySelector)
         {
             Check.NotNull(keySelector, "keySelector");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .GroupBy(keySelector);
             data.GroupByKey = keySelector;
             return new SelectQuery<IGroup<TKey, TModel>>(data, dataFactory);
         }
@@ -365,6 +389,9 @@ namespace TypesafeSQL
         {
             Check.NotNull(keySelector, "keySelector");
             Check.NotNull(elementSelector, "elementSelector");
+            if (data.SelectClause != null)
+                return new SelectQuery<TModel>(dataFactory.CreateSelectQueryData(data, typeof(TModel)), dataFactory)
+                    .GroupBy(keySelector, elementSelector);
             data.GroupByKey = keySelector;
             data.GroupByElement = elementSelector;
             return new SelectQuery<IGroup<TKey, TElement>>(data, dataFactory);

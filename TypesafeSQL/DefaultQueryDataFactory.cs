@@ -30,12 +30,15 @@ namespace TypesafeSQL
         /// <param name="fromData">
         /// The data passed to a from clause.
         /// </param>
+        /// <param name="modelType">
+        /// The type of a query model.
+        /// </param>
         /// <returns>
         /// The <see cref="c:SelectQueryData"/> instance.
         /// </returns>
-        public SelectQueryData CreateSelectQueryData(IQuerySource fromData)
+        public SelectQueryData CreateSelectQueryData(IQuerySource fromData, Type modelType = null)
         {
-            return new SelectQueryData(new SqlCommandBuilder(nameResolver), fromData);
+            return new SelectQueryData(new SqlCommandBuilder(nameResolver), fromData, modelType);
         }
 
         /// <summary>

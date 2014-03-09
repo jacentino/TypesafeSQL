@@ -60,10 +60,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => user.Login == user.FirstName;
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)            
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);     
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE ([user].[Login]) = ([user].[FirstName])"));
         }
 
@@ -73,10 +72,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => user.Login == "jacenty";
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE ([user].[Login]) = (@p0)"));
             Assert.That(command.Parameters["@p0"], Is.EqualTo("jacenty"));
         }
@@ -88,10 +86,9 @@ namespace TypesafeSQL.Tests
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             var jacenty = "jacenty";
             Expression<Predicate<User>> whereClause = user => user.Login == jacenty;
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE ([user].[Login]) = (@p0)"));
             Assert.That(command.Parameters["@p0"], Is.EqualTo("jacenty"));
         }
@@ -102,10 +99,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => user.Login.StartsWith("jac");
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE ([user].[Login]) LIKE ((@p0) + '%')"));
         }
 
@@ -115,10 +111,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => user.Login.Contains("cent");
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE ([user].[Login]) LIKE ('%' + (@p0) + '%')"));
         }
 
@@ -128,10 +123,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => user.Login.Substring(1, 3) == "ace";
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE (SUBSTRING([user].[Login], @p0 + 1, @p1)) = (@p2)"));
         }
 
@@ -141,10 +135,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => user.Login.Length > 3;
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE (LEN([user].[Login])) > (@p0)"));
         }
 
@@ -154,10 +147,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => user.FirstName == "Jacek" && user.LastName == "Hełka";
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(
                 command.Command, 
                 Is.EqualTo("SELECT * FROM [User] [user] WHERE (([user].[FirstName]) = (@p0)) AND (([user].[LastName]) = (@p1))"));
@@ -169,10 +161,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => !(user.FirstName == "Jacek");
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE NOT (([user].[FirstName]) = (@p0))"));
         }
 
@@ -182,10 +173,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => -user.Id < 10;
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE (- ([user].[Id])) < (@p0)"));
         }
 
@@ -195,10 +185,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Predicate<User>> whereClause = user => (user.Login != null ? user.Login : user.FirstName).StartsWith("jac");
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(
                 command.Command, 
                 Is.EqualTo("SELECT * FROM [User] [user] WHERE (IIF(([user].[Login]) IS NOT (NULL), [user].[Login], [user].[FirstName])) LIKE ((@p0) + '%')"));
@@ -312,10 +301,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Func<User, bool>> whereClause = user => user.Login == "jacenty";
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE ([user].[Login]) = (@p0)"));
         }
 
@@ -383,10 +371,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Func<User, bool>> whereClause = user => user.BirthDate == new DateTime(1968, 06, 02);
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE ([user].[BirthDate]) = (DATETIMEFROMPARTS(@p0, @p1, @p2, 0, 0, 0, 0))"));
         }
 
@@ -396,10 +383,9 @@ namespace TypesafeSQL.Tests
             var builder = new SqlCommandBuilder(new DefaultNameResolver());
             var source = new ModelQuerySource(typeof(User), new DefaultNameResolver());
             Expression<Func<User, bool>> whereClause = user => DateTime.Today.Subtract(user.BirthDate).Days > 100;
-            var command = builder.GetSelectCommand(new SelectQueryData(builder, source)
-            {
-                WhereClause = whereClause
-            });
+            var data = new SelectQueryData(builder, source);
+            data.WhereClauses.Add(whereClause);
+            var command = builder.GetSelectCommand(data);
             Assert.That(command.Command, Is.EqualTo("SELECT * FROM [User] [user] WHERE (DATEDIFF(day, [user].[BirthDate], GETDATE())) > (@p0)"));
         }
 
@@ -844,5 +830,52 @@ namespace TypesafeSQL.Tests
                 command.Command, 
                 Is.EqualTo("SELECT * FROM [User] [u] WHERE ([u].[Disabled] = 1) AND (([u].[LoginAttempts]) = (@p0))"));
         }
+
+        [Test]
+        public void GetSqlCommandTranslatesMultipleWhereClausesWithConditionsInOneClause()
+        {
+            var builder = new QueryBuilder();
+            var command = builder.Table<User>()
+                .Where(u => u.FirstName == "Jacek")
+                .Where(u => u.LastName == "Hełka").ToSql();
+            Assert.That(
+                command.Command,
+                Is.EqualTo("SELECT * FROM [User] [u] WHERE ([u].[FirstName]) = (@p0) AND ([u].[LastName]) = (@p1)"));
+        }
+
+        [Test]
+        public void GetSqlCommandTrnslatesWhereClauseAfterSelectWithNestedSelect()
+        {
+            var builder = new QueryBuilder();
+            var command = builder.Table<User>()
+                .Select(u => new { UserName = u.Login, Email = u.Email })
+                .Where(u => u.UserName == "jacenty")
+                .ToSql();
+            Assert.That(
+                command.Command,
+                Is.EqualTo(
+                    "SELECT * FROM (SELECT [sq0_u].[Login] AS [UserName], [sq0_u].[Email] AS [Email] FROM [User] [sq0_u]) [u] " + 
+                    "WHERE ([u].[UserName]) = (@p0)"));
+        }
+
+        [Test]
+        public void GetSqlCommandMultipleWhereClausesAfterGroupByIsTranslatedToHavingWithMultipleConditions()
+        {
+            var builder = new QueryBuilder();
+            var loginCounts = from u in builder.Table<User>()
+                              group u.Login by new { u.FirstName, u.LastName } into ug
+                              where ug.Key.FirstName == "Jacek"
+                              where ug.Key.LastName == "Hełka"
+                              select new { User = ug.Key.FirstName + " " + ug.Key.LastName, NumOfLogins = ug.Count() };
+            var command = loginCounts.ToSql();
+            Assert.That(
+                command.Command,
+                Is.EqualTo(
+                    "SELECT (([u].[FirstName]) + (@p2)) + ([u].[LastName]) AS [User], COUNT(*) AS [NumOfLogins] " +
+                    "FROM [User] [u] " +
+                    "GROUP BY [u].[FirstName], [u].[LastName] " +
+                    "HAVING ([u].[FirstName]) = (@p0) AND ([u].[LastName]) = (@p1)"));
+        }
+
     }
 }
